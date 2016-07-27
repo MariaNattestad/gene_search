@@ -9,7 +9,8 @@ var annotation;
 // ];
 
 
-function showResult(str) {
+function showResult() {
+	var str = this.value;
 	if (str.length==0) { 
 		d3.select("#livesearch").html("");
 		d3.select("#livesearch").style("border","0px");
@@ -58,6 +59,9 @@ var read_annotation_file = function(filename) {
 		console.log("Finished reading annotation")
 	});
 }
+
+
+d3.select("#search_input").on("keyup",showResult);
 
 read_annotation_file("resources/Human_hg19.genes.csv");
 
