@@ -8,9 +8,35 @@ var annotation;
 // 			{"chromosome":"1", "start": 955503, "end": 991496, "name":"ENSG00000188157.9","strand":"+","type":"protein_coding","gene":"AGRN"}		
 // ];
 
+var last_value = "";
+
+var highlighted_index = 0;
 
 function showResult() {
+
+	var key = d3.event.keyCode;
+
+	if (key == 13) { // Enter/Return key
+		selectGene(d3.select("#select_" + highlighted_index).property("value"));
+		highlighted_index = 0;
+		return;
+	} else if (key == 40) { // down arrow
+		d3.select("#select_" + highlighted_index).style("background-color","#ffffff");
+		highlighted_index++;
+		d3.select("#select_" + highlighted_index).style("background-color","#eeeeee");
+		return;
+	} else if (key == 38) { // up arrow
+		d3.select("#select_" + highlighted_index).style("background-color","#ffffff");
+		highlighted_index--;
+		d3.select("#select_" + highlighted_index).style("background-color","#eeeeee");
+		return; 
+	}
+
 	var str = this.value;
+	if (str == last_value) {
+		return;
+	}
+
 	if (str.length==0) { 
 		d3.select("#livesearch").html("");
 		d3.select("#livesearch").style("border","0px");
@@ -19,17 +45,32 @@ function showResult() {
 
 	var search_value = str.toUpperCase();
 
+	var max_suggestions_to_show = 10;
 	var suggestions = "";
+	var num_suggestions = 0;
 	for (var i in annotation) {
 		if (annotation[i].gene.indexOf(search_value) != -1) {
-			suggestions += '<p onclick="selectGene(' + i + ')">' + annotation[i].gene + "  [chromosome = " + annotation[i].chromosome + "]" + '</p>';
+			suggestions += '<li value="' + i + '" id="select_' + num_suggestions + '" onclick="selectGene(' + i + ')">' + annotation[i].gene + "  [chromosome = " + annotation[i].chromosome + "]" + '</li>';
+			num_suggestions++;
+			if (num_suggestions > max_suggestions_to_show) {
+				suggestions += '<li>...</li>';
+				break;
+			}
 		}
-	}
-	if (suggestions == "") {
-		suggestions = "no match";
 	}
 	d3.select("#livesearch").html(suggestions);
 	d3.select("#livesearch").style("border","1px solid #A5ACB2");
+
+	if (suggestions == "") {
+		suggestions = "no match";
+	} else {
+		console.log("highlighting:");
+		console.log(highlighted_index);
+		d3.select("#select_" + highlighted_index).style("background-color","#eeeeee");
+	}
+	
+
+	last_value = str;
 }
 
 function selectGene(index) {
