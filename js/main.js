@@ -58,17 +58,17 @@ function showResult() {
 			}
 		}
 	}
-	d3.select("#livesearch").html(suggestions);
-	d3.select("#livesearch").style("border","1px solid #A5ACB2");
 
 	if (suggestions == "") {
 		suggestions = "no match";
-	} else {
-		console.log("highlighting:");
-		console.log(highlighted_index);
-		d3.select("#select_" + highlighted_index).style("background-color","#eeeeee");
-	}
-	
+	} 
+
+	d3.select("#livesearch").html(suggestions);
+	d3.select("#livesearch").style("border","1px solid #A5ACB2");
+
+	console.log("highlighting:");
+	console.log(highlighted_index);
+	d3.select("#select_" + highlighted_index).style("background-color","#eeeeee");
 
 	last_value = str;
 }
